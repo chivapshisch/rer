@@ -4,4 +4,9 @@ from .models import *
 class CarsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cars
-        fields = ("number", "model", "price")
+        fields = ("town","number", "model", "price", "status","cvet", "god_vypuska")
+
+class AllInf(serializers.ModelSerializer):
+    class Meta:
+        model = Cars 
+        fields = "__all__"

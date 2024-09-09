@@ -4,18 +4,28 @@ from rest_framework.response import Response
 from rest_framework import generics 
 from .models import * 
 from .serializers import * 
+from django.http import Http404
 
-class Ehai(APIView):
-    def get(self, request):
-        snip = Cars.objects.all()
-        serializer = CarsSerializer(snip, many = True)
+class Ehai(generics.ListAPIView):
+    queryset = Cars.objects.all()
+    serializer_class = AllInf
+
+class Vybor(APIView):
+    def get_queryst(self, pk):
+        try:
+            return Cars.objects.get(pk=pk)
+        except Cars.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, pk):
+        snip = self.get_queryst(pk)
+        serializer = CarsSerializer(snip)
         return Response(serializer.data)
 
-    def post(self, requset):
-        serializer = CarsSerializer(data = requset.data)
-        if serializer.is_valid():
-            serializer.save()
-            return  Response(serializer.data)
-        else:
-            error = ({'error': error})
-            return Response(error)
+class NewCar(generics.CreateAPIView):
+    queryset = Cars.objects.all()
+    serializer_class = CarsSerializer
+
+class Change(generics.UpdateAPIView):
+    queryset = Cars.objects.all()
+    serializer_class = CarsSerializer
